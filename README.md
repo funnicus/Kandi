@@ -6,6 +6,6 @@ Tämä tutkielma vertailee kahta tällä hetkellä suosittua tapaa luoda asiakas
 
 GraphQL:n saavuttamasta suhteellisen nopeasta suosiosta huolimatta, se ei vaikuta pystyvän syrjäyttämään REST-ekosysteemiä vielä lähivuosina. GraphQL:n tarjoama kyselykieli antaa joustavuutta, mutta tekee rajapinnoista myös hieman monimutkaisempia. On otettava myös huomioon, että REST on muodostunut muotisanaksi, millä viitataan myös REST:n kaltaisiin rajapintoihin. Näin ollen GraphQL saattaa olla jo suositumpi kuin todelliset, alkuperäisen määritelmän mukaiset REST-toteutukset.
 
-_Tämä tutkielma on toteuttu osana Turun yliopiston tekniikan kandidaatin (tietotekniikka) tutkintoohjelmaa._
+_Tämä tutkielma on toteuttu osana Turun yliopiston tekniikan kandidaatin (tietotekniikka) tutkinto-ohjelmaa._
 
 _Tämä repositorio sisältää tutkielman LaTex lähdekoodin._
