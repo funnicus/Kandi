@@ -1,0 +1,103 @@
+\documentclass[a4paper,12pt,language=finnish,version=final,hidechapters=true,sharelatex=true,emptyfirstpages=true,minted=true]{utuftthesis}
+
+% Hyperref ladataan lopputyöpohjassa, ei kannata ladata täällä - paketti on hieman nirso siitä, milloin ja kuinka monta kertaa se ladataan
+\usepackage{hyperref}
+
+% Älä käytä pdftitleä täällä - aseta metadata output.xmpdata-tiedostossa. Kun version laitetaan finaliksi, sen metadata pdf:ään
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+    %pdftitle={Overleaf Example},
+    %pdfpagemode=FullScreen,
+    }
+
+%% Hieman paremmat oletukset mintedille
+\setminted{
+breaklines,
+baselinestretch=1.1,
+frame=lines,
+linenos
+}
+    
+\urlstyle{same}
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+\addbibresource{Bibliografia.bib}
+\begin{document}
+
+\pubyear{2022}
+
+\pubmonth{5}
+
+\publab{Ohjelmistotekniikka}
+
+\publaben{Software Engineering}
+
+\pubtype{tkk}
+\title{GraphQL ja REST: tuleeko GraphQL ottamaan REST:n paikan web-rajapintojen kuninkaana?}
+\author{Juhana Kuparinen}
+
+\maketitle
+\input{abstract.tex}
+
+% empty pagestyle for table of contents etc.
+% otherwise you'll get simple page style with roman page numbers
+\pagestyle{empty}
+
+% mandatory
+\tableofcontents
+
+% if you want a list of figures
+%\listoffigures
+
+% if you want a list of tables
+%\listoftables
+
+% 'list of acronyms'
+%   - you may not need this at all
+%   - create a chapter called List Of Acronyms (or whatever), which
+%     should contain all your acronym definitions, e.g. 
+%     \chapter{List Of Acronyms} 
+%   - the secnumdepth trickery is needed because acronyms are as a
+%     standard chapter and we are faking '\listofacronyms'
+%
+%\setcounter{secnumdepth}{-1}
+%\input{your acronym chapter's file name}
+%\setcounter{secnumdepth}{2}% setup page numbering, page counter, etc.%
+\begin{comment}
+The thesis starts here.
+
+To better organize things, create a new tex file for each chapter
+and input it below.
+
+Avoid using the å, ä, ö or <space> characters in referred names and
+underscores \_ in file names (may break hyperref).
+
+Good luck!
+\end{comment}
+
+\input{Johdanto.tex}\input{toinenluku.tex}\input{kolmasluku.tex}\input{neljasluku}
+%\input{file_name_of_chapter_x}
+%\input{file_name_of_chapter_y}
+
+\begin{comment}
+The thesis main content ends here.
+\end{comment}
+\printbibliography
+
+\begin{comment}
+Create your appendix chapters with command \textbackslash appchapter\{some
+name\} instead of \textbackslash chapter\{some name\} for the automagic
+page counting to work!
+\end{comment}
+
+
+\begin{comment}
+main document ends here
+\end{comment}
+
+\end{document}

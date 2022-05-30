@@ -1,0 +1,20 @@
+query HeroComparison($first: Int = 2) {
+  leftComparison: hero(franchise: "thewitcher") {
+    ...comparisonFields
+  }
+  rightComparison: hero(franchise: "spyxfamily") {
+    ...comparisonFields
+  }
+}
+
+fragment comparisonFields on Character {
+  name
+  friendsConnection(first: $first) {
+    totalCount
+    edges {
+      node {
+        name
+      }
+    }
+  }
+}

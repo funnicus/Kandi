@@ -1,0 +1,7 @@
+type Human {
+  id: ID!
+  name: String!
+  age: Int
+  friends: [Character!]
+  appearsIn: [Episode]!
+}

@@ -1,0 +1,221 @@
+\chapter{GraphQL ja REST} \label{toinenluku}
+
+Ennen GraphQL- ja REST-rajapintojen varsinaista vertailua, tässä luvussa käydään läpi molemmat rajapinta-arkkitehtuurit pintapuolisesti. Näin myös lukijat, jotka eivät tiedä paljoakaan aiheesta, saavat pienen perehdytyksen käsiteltäviin asioihin. GraphQL:n ja REST:in lisäksi aloitetaan luku avaamalla rajapinta-sanan merkitys käsiteltävien aiheiden yhteydessä.
+
+
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+\section{Ohjelmointirajapinnat}
+\label{Ohjelmointirajapinnat}
+
+Ohjelmointirajapinta (engl. API, Application Programming Interface) on joukko tietokoneohjelman ominaisuuksia ja sääntöjä, joiden kautta muut ohjelmistot voivat olla vuorovaikutuksessa tietokoneohjelman kanssa \cite{mdnapi}. Usein rajapinta määrittelee tiettyjä alkuehtoja, joiden täyttyessä se suorittaa tietyn tehtävän ja palauttaa määrämuotoisen tuloksen. Tiivistettynä ohjelmiston rajapinnan kautta voidaan kommunikoida kyseisen ohjelman kanssa. Datan hakeminen ja tilan muuttaminen kohdeohjelmistossa ovat yleisiä käyttötilanteita.
+
+Web-ympäristössä rajapinnat ovat usein joukko koodin ominaisuuksia, kuten metodeja, tapahtumia ja URL-osoitteita \cite{mdnapi}. Web-kehittäjät käyttävät näitä sovelluksissaan kommunikoidakseen selainten sekä kolmansien osapuolten verkko-osoitteiden ja sivujen kanssa.
+
+\section{GraphQL}
+\label{GraphQL}
+
+GraphQL on asiakasohjelmien rakentamiseen kehitetty avoimen lähdekoodin kyselykieli ja ajonaikainen ympäristö palvelinsovelluksille. Se tarjoaa intuitiivisen ja joustavan syntaksin sekä systeemin kuvaamaan ohjelman data- ja vuorovaikutusvaatimukset. Kyselykielenä GraphQL ei ole perinteinen Turing-täydellinen ohjelmointikieli, joka
+kykenisi mielivaltaiseen laskentaan: se on luotu kuvaamaan pyyntöjä erilaisiin ohjelmointirajapintoihin. GraphQL ei esitä vaatimuksia, kuten tiettyä kieltä tai tietokantajärjestelmää, sen toteuttavalle ohjelmalle. GraphQL:n toteuttavat sovelluspalvelut liittävät itsensä sen tarjoamaan yhtenäiseen kieleen ja tyyppijärjestelmään. \cite{graphql-spec, graphqlorg}
+
+\subsection{Skeemat ja tyypit}
+\label{Skeemat ja tyypit}
+
+GraphQL-filosofian ytimessä on tarjota dataa hakevalle asiakkaalle mahdollisuus määritellä tarkasti, mitä dataa rajapinta palauttaa. GraphQL kuvaa rajapinnan datan oman tyyppisysteeminsä ja skeemojen avulla graafin muotoisena tietorakenteena. GraphQL määrittelee nämä tietorakenteet oman tyyppikielensä avulla \textit{(GraphQL skeemakieli - GraphQL schema language)}. \cite{SchemasAndTypes} 
+
+GraphQL nimeää kuusi erilaista tyyppimääritelmää (type definitions). Näiden lisäksi on olemassa kaksi niin sanottua "kuorityyppiä" (wrapper types) \cite{graphql-spec}. Käydään seuraavaksi näistä jokainen lyhyesti läpi. 
+
+\paragraph{Oliotyypit} GraphQL-skeemojen yksinkertaisin komponentti on oliotyyppi (object type). Oliotyypillä voidaan kuvata, missä muodossa data tulee palautumaan rajapinnasta. GraphQL-skeemakielellä voidaan määritellä oliotyyppi esimerkiksi seuraavasti:
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/character.graphql}
+
+Jokaiselle oliotyypille määritellään kentät. Kenttä voi olla joko yksi GraphQL:n sisäänrakennetuista (tai itse luoduista) skalaarityypeistä tai toinen oliotyyppi. Jokainen kenttä voi myös ottaa vastaan argumentteja (esimerkin kenttä \texttt{height}). Argumentit voivat olla joko valinnaisia tai pakollisia. Valinnaisille argumenteille voidaan määritellä oletusarvo, joka on asetettu esimerkin kentän \texttt{height} argumentille \texttt{unit} olemaan \texttt{METER}. \cite{SchemasAndTypes}
+
+\paragraph{Skalaarityypit} GraphQL-kyselyn palauttaman graafin on esitettävä kentät oikeanlaisena datana graafin päätepisteissä tai "lehdissä". GraphQL kuvaa datan, kuten merkkijonot tai numerot, skalaarityyppien avulla. GraphQL:ssä on sisään määriteltynä viisi skalaarityyppiä: \textbf{Int} eli kokonaisluvut (signed 32-bit), \textbf{Float} eli liukuluvut, \textbf{String} eli merkkijonot, \textbf{Boolean} eli totuusarvot true tai false ja \textbf{ID}. ID kuvaa uniikkia tunnistetta. Se serialisoidaan samoin kuin String, mutta ei ole tarkoitettu ihmisten luettavaksi. \cite{SchemasAndTypes}
+
+Useimmissa GraphQL-palvelutoteutuksissa voidaan myös määritellä omatekoisia skalaarityyppejä. Omien skalaarityyppien serialisoinnin, deserialisoinnin ja validoinnin toteuttaminen jätetään ohjelmoijalle itselleen. \cite{SchemasAndTypes}
+
+\paragraph{Rajapinta} Rajapinta GraphQL-skeemakielen yhteydessä muistuttaa olio-ohjelmoinnista tuttua käsitettä. Rajapinta on niin sanottu abstrakti tyyppi ja toinen abstrakteista tyypeistä, joka on määritelty GraphQL:ssä. Rajapinta sisältää tietyn joukon kenttiä, joiden täytyy löytyä sen toteuttavilta oliotyypeiltä. \cite{SchemasAndTypes, graphql-spec} Rajapintoja voitaisiin määritellä ja käyttää esimerkiksi seuraavasti:
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/interface.graphql}
+
+\paragraph{Unionit} GraphQL-unioni edustaa oliota, joka voi olla mikä tahansa oliotyyppi listassa tyyppejä ja on GraphQL:n toinen abstrakti tyyppi. Unioni ei voi sisältää skalaarityyppejä, kuten String tai Int: sitä käytetään tiukasti oliotyyppien kanssa. Unionit muistuttavat rajapintoja, mutta eivät määrittele yhteisiä kenttiä tyyppien välillä. \cite{graphql-spec}
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/union.graphql}
+
+Esimerkin tyypin \textit{SearchQuery}-kentän \textit{firstSearchResult}-arvo voisi olla joko Photo tai Person.
+
+\paragraph{Luetellut tyypit} Luetellut tyypit tai enumit (engl. enumeration type) edustavat erityistä skalaarityyppiä, jonka arvo voi olla mikä tahansa tietyn joukon arvoista. Näiltä osin enumit eivät eroa GraphQL:ssä muiden ohjelmointikielien vastaavista rakenteista. Enum-rakenteen voi määritellä seuraavasti: \cite{graphql-spec, SchemasAndTypes}
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/enum.graphql}
+
+\paragraph{Syöteoliotyypit} Joissakin tapauksissa halutaan syöttää kenttien argumenteiksi hieman monimutkaisempia tietorakenteita. Tällöin on käytettävä syöteoliotyyppiä (input object type). Syöteolio voidaan määritellä seuraavasti:
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/input.graphql}
+
+Syöteolio muistuttaa rakenteeltaan hyvin paljon normaalia oliotyyppiä. Syöteolioissa ei kuitenkaan voi olla kenttiä, jotka sisältävät argumentteja tai viittauksia rajapintoihin tai unioneihin. Normaalia oliotyyppiä ei siis tule antaa argumentin tyypiksi! \cite{graphql-spec}
+
+\paragraph{Kuorityypit: listat ja non null} Edellisissä esimerkeissä joidenkin tyyppien perässä on huutomerkki tai ne ovat hakasulkeiden sisällä. Huutomerkit edustavat ei-nollattavia (non null) kenttiä ja hakasulkeet listoja ja ne määritellään muodossa \textbf{Non-Null} ja \textbf{List} vastaavasti.
+
+GraphQL:ssä kentät voivat saada oletusarvoisesti arvon null. Ei-nollattavan kentän arvo ei voi milloinkaan olla null. Listaksi merkitty kenttä palauttaa taulukon kentän tyyppisiä arvoja.
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/wrapper.graphql}
+
+Non-Null- ja List-tyyppisiä kenttiä voidaan yhdistellä, niin kuin edeltävästä koodiesimerkistä nähdään: Hakasulkujen ulkopuolella oleva huutomerkki tarkoittaa, että itse lista ei voi olla null. Hakasulkujen sisällä olevan tyypin perässä oleva huutomerkki taas merkitsee, että listan alkiot eivät voi olla null. Jos molempien perässä on huutomerkit, sekä alkiot että itse lista eivät voi saada arvoa null \cite{graphql-spec, SchemasAndTypes}.
+
+
+
+%--------------- KAPPALE ---------------------
+
+\subsection{Kyselyt ja mutaatiot}
+\label{Kyselyt ja mutaatiot}
+
+Valmiin GraphQL-rajapinnan tarkoitus on tarjota sitä käyttäville sovelluksille mahdollisuus muokata ja hakea dataa joustavasti ja juuri siten kuin asiakas haluaa. Jos asiakas haluaisi esimerkiksi tietää jonkun tietyn ihmisen nimen ja pituuden, mutta ei mitään muuta tietoa hänestä, haettavasta dataoliosta voidaan valita kentät, jotka rajapinnan tulisi palauttaa kyselyn täytyttyä:
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/esimerkki1.graphql}
+
+Vastauksena saataisiin data seuraavassa muodossa:
+
+\inputminted{json}{listaukset/esimerkki1.json}
+
+Vastauksesta huomataan, että palautettu JSON-olio vastaa lähes täysin GraphQL-kyselyn rakennetta. Niin kuin jo aikaisemminkin mainittiin, tämä on GraphQL-filosofian ydin. Ohjelmoija voi aina odottaa saavansa halutun datan rajapinnasta, eikä mitään ylimääräistä. \cite{QueriesAndMutations}
+
+\paragraph{Operaatiotyypit} GraphQL jakaa rajapintoihin tehdyt operaatiot kolmeen luokkaan: kyselyt (query), mutaatiot (mutations) ja tilaukset (subscriptions). Kyselyillä haetaan rajapinnan kautta palvelimella olemassa olevaa dataa. Mutaatioilla voidaan muokata palvelimen tilaa ja siellä sijaitsevaa dataa. Tilauksilla muodostetaan pitkäkestoinen pyyntö palvelimelle, joka hakee dataa vastauksena palvelimen tapahtumiin. Tämä on hyödyllistä esimerkiksi tilanteessa, jossa olisi tarkoitus toteuttaa reaaliajassa toimiva chat-sovellus. \cite{graphql-spec}
+
+Operaatiotyyppi määritellään yleensä GraphQL-operaation yhteydessä ja se on pakollinen, ellei käytetä \textit{kyselyn lyhennettyä syntaksia} (query shorthand syntax). Edellä ollut esimerkki luetaan kyselyksi ja se käyttää lyhennettyä syntaksia. Alla on esimerkki normaalista syntaksista:
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/esimerkki3.graphql}
+
+Kyselylle on myös annettu \textbf{operaationimi} \textit{HeroNameAndFriends}. Operaationimi ei ole pakollinen, mutta sen käyttö on suositeltavaa, jotta GraphQL-koodi olisi helpommin luettavaa. Kyselyn lyhennettyä syntaksia ei voi käyttää operaationimien kanssa. \cite{graphql-spec} \cite{QueriesAndMutations}
+
+\paragraph{Argumentit} Edellisessä koodiesimerkissä huomattiin, että pelkän kenttien valitsemisen lisäksi näille voidaan antaa myös argumentteja. Argumentit ja miten niitä määritellään palvelimen skeemoihin, käytiin jo läpi aliluvussa \ref{Skeemat ja tyypit}. Esimerkissä nähtiin, miten näitä käytetään itse kyselyissä. Rajapinnasta haettiin ihmiset, joilla on id 1000 ja haluttiin, että heidän pituutensa näytetään jalkoina. Näin GraphQL:n suoritusympäristö osaa rajata haun koskemaan vain määrittelyä vastaavia tuloksia.
+
+GraphQL:ssä jokainen kenttä ja olio voi saada oman joukon argumentteja. Näin voidaan välttyä usean pyynnön lähettämiseltä rajapinnalle. Tämä on tärkeää REST- ja GraphQL-rajapintojen vertailussa, ja asian merkitystä tullaan käymään tarkemmin läpi, kun näitä arkkitehtuurimalleja vertaillaan. \cite{QueriesAndMutations}
+
+\paragraph{Fragmentit} Kun GraphQL-sovellus kasvaa, ja sitä palvelevien operaatioiden määrä lisääntyy, voi useammassa kyselyssä esiintyä täysin samoja kenttiä. Ohjelmoijasta olisi varmasti turhauttavaa määritellä samat kentät eri kyselyille aina uudestaan. Apuun tulevat fragmentit. Halutut kentät ja oliot voidaan tallettaa fragmentteihin ja näitä voidaan käyttää eri kyselyissä. \cite{QueriesAndMutations} Tätä kuvaa seuraava esimerkki:
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/esimerkki2.graphql}
+
+Edeltävään esimerkkiin saadaan seuraava JSON-muotoinen vastaus:
+
+\inputminted{json}{listaukset/esimerkki2.json}
+
+\paragraph{Muuttujat} Luultavasti jokainen GraphQL-operaatioissaan argumentteja käyttävä asiakasohjelma haluaa antaa argumentit dynaamisesti. Dynaamisten arvojen antamiseen on GraphQL:ssä sisäänrakennettu ratkaisu: muuttujat. \cite{QueriesAndMutations} Jos haluataan hakea profiili dynaamisesti määritellyn id:n ja profiilikuvan koon kera jossakin satunnaisessa sovelluksessa, voitaisiin se tehdä seuraavasti:
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/esimerkki4.graphql}
+
+Annetut muuttujat JSON-muodossa:
+
+\inputminted{json}{listaukset/esimerkki4-vars.json}
+
+\paragraph{Direktiivit} Muuttujien avulla voidaan antaa argumentteja dynaamisesti kyselyille. GraphQL-rajapintaa käyttävä kehittäjä saattaa myös kohdata tilanteen, jossa itse kyselyn muotoa halutaan muokata dynaamisesti. Tämä voidaan toteuttaa \textbf{direktiiveillä}. Direktiivejä voidaan liittää kenttiin ja fragmentteihin, ja ne vaikuttavat kyselyn suorittamiseen palvelimen haluamalla tavalla. GraphQL-spesifikaatio sisältää kaksi sisäänrakennettua direktiiviä:
+
+\begin{itemize}
+	\item \texttt{@include(if: Boolean)} Sisällytä kenttä vastauksessa, mikäli argumentti on tosi.
+    \item \texttt{@skip(if: Boolean)} Jätä kenttä pois vastauksesta, mikäli argumentti on tosi.
+\end{itemize}
+
+Direktiiviä \texttt{@include} voidaan käyttää esimerkiksi seuraavasti:
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/directive.graphql}
+
+Kyselylle annetut muuttujat:
+
+\inputminted{json}{listaukset/directive-vars.json}
+
+Vastauksena saatu JSON-olio:
+
+\inputminted{json}{listaukset/directive-res.json}
+
+Edellä listattujen vakiona GraphQL-toteutuksissa tulevien direktiivien lisäksi eri GraphQL-palvelintoteutuksilla saattaa olla muita omia hyödyllisiä direktiivejä. \cite{QueriesAndMutations}
+
+\paragraph{Mutaatiot} Ohjelmointirajapinnan omaavat tietolähteet tarvitsevat lähes aina datan kyselyn lisäksi tavan muokata dataa. Teknisesti mikä tahansa kysely voisi myös muokata dataa palvelimella. On kuitenkin viisasta noudattaa GraphQL:lle määriteltyä käytäntöä, jonka mukaan dataa palvelimella tulisi muokata ainoastaan mutaatioiden kautta. \cite{QueriesAndMutations}
+
+Rakenteeltaan mutaatiot eivät juurikaan eroa kyselyistä. Jos ne palauttavat jonkin olion, voidaan mutaatioiden rakenne muodostaa täysin samoin kuin kyselynkin, lukuun ottamatta operaationimeä \texttt{mutation}. Tarkastellaan seuraavaksi yksinkertaista mutaatiota:
+
+\inputminted{gql.py:GraphQLLexer -x}{listaukset/mutation.graphql}
+
+Mutaatiolle annetut muuttujat:
+
+\inputminted{json}{listaukset/mutation-vars.json}
+
+Vastauksena saatu JSON-olio:
+
+\inputminted{json}{listaukset/mutation-res.json}
+
+Esimerkistä huomaa, että mutaatio \textit{CreateReviewForAnime} olisi voitu toteuttaa kyselynä tismalleen samalla tavalla. Onko siis mutaatioiden käyttö datan muuttamiseen palvelimella ainoastaan semanttinen käytäntö, jolla ne voidaan erotella helpommin kyselyistä? Jos tarkastellaan mutaatioiden toimintaa konepellin alla, niin vastaus on ei. Verratessa kyselyihin, mutaatioiden kentät suoritetaan peräkkäin, kun taas kyselyiden kentät saman aikaisesti. Näin mutaatiot eivät aiheuta niin sanottuja kilpailutilanteita (engl. race condition) ja mahdollista tästä johtuvaa datan tai palvelimen tilan korruptoitumista. \cite{QueriesAndMutations, graphql-spec}
+
+%--------------- KAPPALE ---------------------%
+
+\section{REST}
+
+Representational State Transfer (REST) on vuonna 2000 julkaistussa Roy Fieldingin väitöskirjassa määritelty rajapinta-arkkitehtuurimalli hajautettuja hypermediasysteemejä varten. Motivaattorina REST:n kehittämiselle oli tarve luoda arkkitehtuurinen malli WWW:n toiminnalle. REST määrittelee erilaisten rajoitteiden kautta, kuinka skaalautuvia ja pitkällä aikavälillä helposti ylläpidettäviä rajapintoja tulisi suunnitella. \cite{FieldingRThesisREST, FieldingRThesis}
+
+Se mitä REST on ja mitä se ei ole, aiheuttaa hyvin usein hämmennystä rajapintojen parissa työskentelevien ihmisten keskuudessa. Tämä johtunee siitä, että REST ei sinänsä ole täydellinen arkkitehtuurimalli itsessään, vaan joukko kriteereitä näiden suunnittelemiseksi. Kriteerit täyttävät arkkitehtuurimallit taas voivat kutsua itseään REST:ksi. Valitettavasti termiä REST käytetään usein myös rajapinnoista, jotka eivät täytä REST:n alkuperäisiä rajoitteita. Fielding onkin kutsunut REST:iä muotisanaksi (buzzword)\footnote{Yes, REST is a buzzword:  https://mobile.twitter.com/fielding/status/1458499370672791565}, jota käytetään kaikkien hiemankin REST:iä muistuttavien rajapintojen kuvaamiseen. \cite{rest-apis-must-be-hypertext-driven}
+
+REST:n määrittelyä ympäröivän tulkinnanvaraisuuden vuoksi tämän aliluvun tarkoituksena on REST-arkkitehtuurin avaamisen lisäksi määritellä, mitä REST tarkoittaa tässä kandidaatintutkielmassa. Aluksi käydään läpi Roy Fieldingin väitöskirjasta löytyvät rajoitteet REST-rajapinnoille ja selvitetään missä rajoitteissa REST-rajapinnat epäonnistuvat yleisimmin. Sen jälkeen tehdään katsaus \textit{Richardsonin kypsyysmalliin (Richardson Maturity Model)}, jossa määritellään REST-rajapinnoille kypsyystasot, sen mukaan, mitä rajoitteita nämä toteuttavat. Seuraavaksi luodaan REST:lle tämän tutkielman kattava määrittely. Viimeisenä käydään läpi lyhyt käytännön esimerkki REST-rajapintatoteutuksesta.
+
+\subsection{REST-rajapinnan kuusi rajoitetta}
+\label{REST-rajapinnan kuusi rajoitetta}
+
+Fieldingiläisen REST-rajapinnan täytyy toteuttaa joukko tarkasti määriteltyjä rajoitteita (engl. constraints). Näin ollen monet REST:ksi itseään kutsuvat rajapinnat eivät aina välttämättä ole REST-rajapintoja. REST:n kaltaisia, vain osan sen rajoitteista toteuttavia rajapintoja, voidaan kutsua REST:n kaltaisiksi rajapinnoiksi (engl. REST-like APIs). \cite{FieldingRThesisREST, rest-apis-must-be-hypertext-driven}
+
+Fieldingin esittämiä REST-rajapintojen rajoitteita on yhteensä kuusi kappaletta, joista yksi on valinnainen, eli sitä ei tarvitse toteuttaa. Käydään seuraavaksi nämä läpi: \cite{FieldingRThesisREST}
+
+\paragraph{Asiakas-palvelin (Client-server)} Ensimmäinen rajoite, jota jokaisen REST-rajapintoja hyödyntävän sovelluksen on seurattava, on asiakas-palvelin-malli. Lyhyesti palvelin tarjoaa resursseja niitä tarvitseville asiakasohjelmille.
+
+\paragraph{Tilattomuus (Stateless)} Asiakas- ja palvelinsovellusten välisen kommunikaation on oltava tilatonta. Jokaisen pyynnön sisältä on löydyttävä kaikki tieto sen ymmärtämiseksi. Tallennetun tilakontekstin hyödyntäminen palvelimella ei ole sallittua: istunnon tila on kokonaisuudessaan asiakasohjelman hallussa. Näin ollen esimerkiksi evästeet (engl. cookies), jotka pitävät kirjaa kirjautumistiedoista palvelimella, rikkovat tätä REST-rajoitetta.
+
+\paragraph{Välimuisti (Cache)} Verkkotehokkuuden parantamiseksi määritellään välimuistirajoite. Hyvin toteutetulla välimuistilla voidaan vähentää palvelimelle tehtyjen pyyntöjen määrää. Jokaisen pyynnön vastauksen yhteydessä, data voidaan määritellä tallennettavaksi välimuistiin. Tällöin asiakasohjelma voi käyttää tätä dataa tulevien vastaavien pyyntöjen täyttämiseen.
+
+\paragraph{Yhtenäinen rajapinta (Uniform Interface)} Yhtenäisen rajapinnan rajoitteen kautta pyritään yksinkertaistamaan järjestelmän arkkitehtuuria, tarjoamaan näkyvyyttä vuorovaikutustilanteissa sekä eristämään rajapinnat asiakasohjelmista, jotta kummatkin voivat kehittyä erillään toisistaan. Fielding määritteli yhtenäisen rajapinnan toteutumiseksi vielä neljä rajapintarajoitetta, jotka käydään läpi aliluvussa \ref{REST epäonnistuu usein rajapintarajoitteissa}.
+
+\paragraph{Kerroksittainen järjestelmä (Layered System)} Kerroksittaisessa järjestelmässä sovelluksen palvelut on järjestetty hierarkisesti: jokainen kerros tarjoaa palveluita ylemmälle kerrokselle ja ottaa vastaan palveluita alemmalta kerrokselta \footnote{https://www.ics.uci.edu/~fielding/pubs/dissertation/net\_arch\_styles.htm\#sec\_3\_4\_2}.
+
+\paragraph{Ladattava koodi (Code-On-Demand)} Viimeinen ja ainoa valinnainen rajoite REST-rajapinnoille. Asiakasohjelmien toiminnallisuutta voidaan laajentaa lataamalla ja suorittamalla palvelimelta haettua koodia, esimerkiksi applettien tai skriptien muodossa. Tämä rajoite on valinnainen, sillä koodin lataamista ei voida välttämättä toteuttaa kaikissa tilanteissa näkyvyyden johdosta. Organisaation palomuuri voi esimerkiksi estää Java-applettien lataamisen ulkoisista lähteistä, jolloin nämä rajapinnat näennäisesti eivät toteuttaisi ladattavan koodin rajoitetta.
+
+\subsection{REST epäonnistuu usein rajapintarajoitteissa}
+\label{REST epäonnistuu usein rajapintarajoitteissa}
+
+Yhteinäisen rajapinnan rajoite toteutuu, kun se täyttää neljä seuraavaa ominaisuutta: resursseilla on oltava tunnisteet, resursseja manipuloidaan representaatioiden kautta, viestien täytyy olla "itsensä kuvaavia" (self-descriptive) ja hypermediaa on käytettävä sovellustilan moottorina (HATEOAS). \cite{FieldingRThesisREST}
+
+Termejä avataan enemmän Fieldingin väitöskirjan aliluvussa 5.2 \footnote{https://www.ics.uci.edu/~fielding/pubs/dissertation/rest\_arch\_style.htm\#sec\_5\_2}. REST:n kaltaisissa rajapinnoissa näistä rajapintarajoitteista jää usein toteutumatta HATEOAS-rajoite. HATEOAS-rajoitteen mukaan jokaisen rajapinnan vastauksen yhteydessä on palautettava lista linkkejä, joista selviää minkälaisia jatkotoimenpiteitä rajapintaan voidaan tehdä. Näin ollen rajapintaa käyttävien asiakasohjelmien tulisi pystyä käyttämään rajapintaa jo pelkästään tietämällä sen juuriosoite. Rajapinta käyttäytyy tällöin verkkosivun lailla, jota voidaan navigoida linkkien avulla. \cite{rest-apis-must-be-hypertext-driven}
+
+HATEOAS-rajapintarajoite mahdollistaa asiakasohjelmien ja rajapinnan itsenäisen kehittymisen. Rajapintaa ei myöskään vältämättä tarvitse versioida, sillä asiakasohjelmaan ei (toivottavasti) olla kovakoodattu muita osoitteita kuin juuriosoite \footnote{https://alexkondov.com/tao-of-node/\#use-hypermedia}. 
+
+\subsection{REST tämän tutkielman yhteydessä}
+\label{REST tämän tutkielman yhteydessä}
+
+Vaikka REST-termille on vuosien varrella kehittynyt hyvinkin joustava ja tilanteesta riippuva määrittely, pyritään tässä tutkielmassa pääasiassa noudattamaan alkuperäistä fieldingiläistä määritelmää REST-rajapinnalle. Tämä tutkielma huomioi kuitenkin vertailuissa myös \textit{Richardsonin kypsyysasteikon} tason 2 REST-rajapinnat, sillä käytännössä suurin osa maailman "REST-rajapinnoista" luultavasti yltää vain tälle tasolle \cite{rmm, tao-of-node, fullstack-rest}. Jos tutkielma poikkeaa fieldingiläisestä määritelmästä, mainitaan tästä selkeästi.
+
+Richardsonin malliin voi tutustua tarkemmin esimerkiksi   \href{https://martinfowler.com/articles/richardsonMaturityModel.html}{täällä} \footnote{https://martinfowler.com/articles/richardsonMaturityModel.html}. Se kuvaa REST-rajapinnan kypsyyttä, sen toteuttamien rajoitteiden määrän kautta. Taso 2 mallissa tarkoittaa lähinnä sellaista REST-rajapintaa, josta puuttuu yhtenäisen rajapinnan HATEOAS-rajoite. \cite{rmm}
+
+\begin{table}[h!]
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{URL}  & \textbf{verbi} & \textbf{toiminnallisuus}                                          \\ \hline
+accounts     & GET            & hakee kaikki kokoelman resurssit                                 \\ \hline
+accounts/100 & GET            & hakee yksittäisen kokoelman resurssin                            \\ \hline
+accounts     & POST           & luo uuden resurssin pyynnön mukana olevasta datasta              \\ \hline
+accounts/100 & DELETE          & poistaa yksilöidyn resurssin                                     \\ \hline
+accounts/100 & PUT            & korvaa yksilöidyn resurssin pyynnön mukana olevalla datalla      \\ \hline
+accounts/100 & PATCH          & korvaa yksilöidyn resurssin osan pyynnön mukana olevalla datalla \\ \hline
+\end{tabular}
+\caption{Resursseille voidaan suorittaa erityyppisiä operaatioita. Operaation määrittelee HTTP-operaation tyyppi tai verbi.}
+\label{table:1}
+\end{table}
+
+Käytännön toteutuksia vertailtaessa, tässä tutkielmassa seurataan Leonard Richardsonin ja Sam Rubyn \cite{restful-web-services} kirjassa \textit{RESTful Web Services} määriteltyä yleistä tapaa toteuttaa REST-rajapintoja. He ovat nimenneet arkkitehtuurityylinsä \textit{Resurssipohjaiseksi arkkitehtuurityyliksi} (engl. Resource-Oriented Architecture). Yksinkertainen toteutus voidaan nähdä taulukosta \ref{table:1}\footnote{https://fullstackopen.com/osa3/node\_js\_ja\_express\#rest}. Resursseja yksilöivä URL muodostetaan resurssityypin nimen ja sen yksilöivän tunnisteen mukaan. Jos palvelun juuriosoite on \textit{www.bank.com}, niin GET-pyyntö osoitteeseen \textit{www.bank.com/accounts/12345} palauttaa resurssin, jonka id on 12345. Vastaus voisi näyttää seuraavalta: 
+
+\inputminted{json}{listaukset/rest.json}
+
+Resurssin tietojen lisäksi vastaus sisältää myös listan seuraavista mahdollisista toiminnoista resurssille. Seuraavat toiminnot on listattava, jotta HATEOAS-rajoite täyttyy.
+
+\inputminted{json}{listaukset/rest2.json}
+
+Mikäli sovelluksen tila vaihtuu, myös vastauksen mukana tulevien linkkien määrä vaihtelee. Jos tämän satunnaisen pankin tili näyttää negatiivista, vastauksen mukana tulisi luultavasti vain linkki talletukseen. Nostoa ja tilisiirtoja ei voitaisi tehdä. \cite{restful-web-services, rest-apis-must-be-hypertext-driven}
+
+
+

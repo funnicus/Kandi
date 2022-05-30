@@ -1,0 +1,35 @@
+{
+  "data": {
+    "leftComparison": {
+      "name": "Geralt of Rivia",
+      "friendsConnection": {
+        "totalCount": 6,
+        "edges": [
+          {
+            "node": {
+              "name": "Yennefer of Vengerberg"
+            }
+          },
+          {
+            "node": {
+              "name": "Cirilla Fiona Elen Riannon"
+            }
+          }
+        ]
+      }
+    },
+    "rightComparison": {
+      "name": "Anya Forger",
+      "friendsConnection": {
+        "totalCount": 1,
+        "edges": [
+          {
+            "node": {
+              "name": "Becky Blackbell"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+\chapter{GraphQL ja REST: miten ne vertautuvat toisiinsa?} \label{kolmasluku}
+
+Tässä luvussä vertaillaan GraphQL- ja REST-rajapintoja. Vertailun kohteina ovat esimerkiksi käytännön toteutus, arkkitehtuurien tehokkuus erilaisissa käyttötilanteissa ja turvallisuus. Tämä luku pyrkii vastaamaan ensimmäiseen tutkielman tutkimuskysymykseen \textit{mitä hyötyjä ja haittoja on GraphQL:n käytössä verrattuna REST:iin?}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+\section{Käytännön toteutus}
+
+Käytännön toteutus on yksi suurimmista GraphQL- ja REST-rajapintojen välisistä eroista. GraphQL määrittelee hyvin selkeästi toteutuksen suuntaviivat kyselykielelleen ja moottorilleen. Näitä on seurattava tarkasti, jotta GraphQL-toteutusta voi kutsua GraphQL:ksi. REST sen sijaan määrittelee suuntaa-antavat rajoitteet, mutta jättää myös hyvin paljon asioita ohjelmoijan tulkittavaksi: resurssien osoitteet, datan muoto (XML, JSON jne.), käyttöympäristö. REST-palvelun luominen ei siis ole välttämättä niin suoraviivaista ja mahdollisia toteutuksia on paljon. 
+
+Kun rajapintaa lähdetään rakentamaan, GraphQL:lle löytyy useita erilaisia valmiita toteutuksia kirjastojen muodossa. Ohjelmoijan ei siis usein tarvitse itse lähteä toteuttamaan moottoria ja kyselykieltä. Esimerkiksi JavaScriptille löytyy hyvin suosittu \href{https://www.apollographql.com/}{Apollo}-kirjasto \footnote{https://www.apollographql.com/} sekä palvelimen että asiakas-sovelluksen GraphQL tarpeisiin. Apollon mukana tulee myös monia lisäominaisuuksia, joita ei olla määritelty GraphQL-spesifikaatiossa. Näitä ovat esimerkiksi asiakkaan ja palvelimen välimuistin hallinta ja joukko uusia direktiivejä. Lista suosituista GraphQL-toteutuksista useille kielille löytyy \href{https://graphql.org/code/}{GraphQL}:n sivuilta \footnote{https://graphql.org/code/}. \cite{apollo-docs, graphqlorg}
+
+Täydelliselle RESTful-toteutukselle on vaikeampi löytää yhtä yksittäistä kirjastoa, sillä toteutus riippuu hyvin paljon ohjelmoijan omista valinnoista. Mikäli etsitään jälleen toteutuksia JavaScript-kielelle Node.js-ympäristössä ja data halutaan tarjota JSON-muodossa, REST rajapinta toteutetaan mitä luultavimmin suositun \href{https://expressjs.com/}{Express}-kirjaston \footnote{https://expressjs.com/} päälle. Express ei kuitenkaan tarjoa selkeää toteutusta kaikille REST-rajapintojen rajoitteille, kuten HATEOAS. Rajoite on joko toteutettava itse, tai sen toteuttamiseen on etsittävä oma kirjastonsa. \cite{express}
+
+%toteutuksen helppous uudestaan
+
+\section{Versiointi ja dokumentaatio}
+
+GraphQL ja REST-rajapintoja ei tarvitse versioida. GraphQL:n ideana on versioinnin sijaan ylläpitää yhtä kehittyvää versiota rajapinnasta. Vanhentuneet kentät voidaan merkitä poistettavaksi käytöstä ja piilottaa työkaluista \cite{graphqlorg}. REST ei sen sijaan ota selvää kantaa versiointiin, mutta mikäli HATEOAS-rajoite toteutuu, versiointi on hyvin varmasti turhaa. Kun puhutaan GraphQL:n versioinnin puuttumisen eduista verrattuna REST:iin, viitataan hyvin luultavasti REST:n kaltaisiin rajapintoihin, joissa ei toteudu HATEOAS-rajoite.
+
+GraphQL-projekteissa käytetään dokumentaatioon useimmiten \textbf{GraphiQL}-työkalua, joka on GraphQL-säätiön alaisuudessa oleva virallinen projekti. GraphiQL paljastaa rajapinnan datan selaimessa olevan käyttöliittymän kautta ja se tulee mukana useimmissa GraphQL-toteutuksissa. GraphQL-rajapinnalle ei siis yleensä tarvitse itse kirjoittaaa kaiken kattavaa dokumentaatiota. 
+
+REST ei määrittele yksittäistä tapaa rajapinnan dokumentaatioon. Monimutkaista dokumentaatiota ei yleensä tarvita myöskään REST:iä käytettäessä, sillä RESTful-rajapinta on luonteeltaan itsensä dokumentoiva HATEOAS-rajoitteen ansiosta. Mikäli HATEOAS-rajoite on kuitenkin jätetty pois, jonkinlainen dokumentaatio on hyvä olla olemassa ja se on luultavasti luotava käsin.
+
+\section{Turvallisuus}
+
+GraphQL- ja REST-rajapinnoilla on monia samoja turvallisuusuhkia, jotka ohjelmoijan tulee ottaa huomioon. Injektio- ja palvelunestohyökkäykset sekä rikkinäisen tunnistautumisen käyttö ovat hyvin yleisiä kummankin tyyppisessä rajapinnassa. \cite{owasp-graphql, owasp-rest}
+
+GraphQL-rajapintoja rakennettaessa on myös otettava huomioon GraphQL-kyselykielen tuomat turvallisuusuhat, joita ei esiinny REST-rajapinnoissa. Yleisiä kyselykielen tuomia uhkia ovat "erittelyhyökkäys" (engl. batching attack), syvät kyselyt ja muilla tavoin kuormittavien kyselyiden suorittaminen \cite{owasp-graphql}. Erittelyhyökkäyksessä hyökkääjä tekee useita eri kalliita kyselyitä yhden palvelinpyynnön mukana ja syvät kyselyt käyttävät hyväksi kyselyiden olioita, joiden syvyttä ei olla rajoitettu. GraphQL:n joustavuus määritellä datan muoto antaa myös suuremman hyökkäyskaistan pahaa tarkoittaville tahoille.
+
+GraphQL-kyselykielen tuomat uhat eivät ole ollenkaan triviaaleja. Esimerkiksi vuonna 2019 teetetyssä aiheeseen liittyvässä tutkimuksessa \cite{Wittern2019} huomattiin, että suurin osa GitHub:sta haetuista GraphQL-rajapinnoista sisälsi edellä mainittuja turvallisuusuhkia. Ongelmiin saattaa kuitenkin löytyä ratkaisu. Hartig ja Perez \cite{graphql-analysis} ovat luoneet muodollisen määritelmän GraphQL-kyselykielelle. Tämä pohjalta he huomasivat, että GraphQL-kyselyille voidaan luoda tehokkaita algoritmeja monimutkaisuuden analysointiin \cite{Hartig2018}. Analysoinnilla kehittäjät voivat välttää kyselykielen mukana tulevia turvallisuuspuutteita.
+
+Monessa GraphQL-toteutuksessa on myös oletusarvoisesti joitakin turvattomia konfiguraatiota, joiden tulisi olla pois päältä tuotantoympäristössä. Esimerkiksi GraphiQL ja ylimääräistä tietoa sisältävät virheilmoitukset helpottavat hyökkäyksen kohdistamista GraphQL-rajapintaan. \cite{owasp-graphql}
+
+Näin ollen turvallisten REST-rajapintojen kehittäminen saattaa siis olla helpompaa. Huolellinen ohjelmoija voi kuitenkin minimoida tai poistaa kokonaan GraphQL-kyselykielen ja konfiguraatioiden mukana tulevat turvallisuusuhat. Sekä \href{https://cheatsheetseries.owasp.org/cheatsheets/GraphQL_Cheat_Sheet.html#graphql-cheat-sheet}{GraphQL}\footnote{https://cheatsheetseries.owasp.org/cheatsheets/GraphQL\_Cheat\_Sheet.html\#graphql-cheat-sheet}- että \href{https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html#rest-security-cheat-sheet}{REST}\footnote{https://cheatsheetseries.owasp.org/cheatsheets/REST\_Security\_Cheat\_Sheet.html\#rest-security-cheat-sheet}-rajapinnoille löytyy kattavat turvallisuusohjeistukset \textit{OWASP Cheat Sheet} -sarjan verkkosivuilta. \cite{owasp-graphql, owasp-rest}
+
+\section{Tehokkuus eri käyttötilanteissa}
+
+\subsection{Yli- ja alihakeminen}
+
+REST-rajapinnassa jokaisella resurssilla on oltava oma tunnisteensa. Web-ympäristössä tunniste on useimmiten URL ja uniikki kyseiselle resurssille. Tämä tarkoittaa sitä, että REST-rajapinnalla on hyvin varmasti useita eri "päätepisteitä" (engl. endpoints), joista dataa haetaan. GraphQL sen sijaan tarjoaa datansa yhdestä päätepisteestä. Resursseilla ei tarvitse olla URL-tunnisteita, sillä ne haetaan tyyppisysteemin avulla.
+
+Koska REST-määrittelee useimmiten palautettavan datan muodon jäykästi ja pitää tätä tiettyjen URL-tunnisteiden takana, voi monimutkaisissa rajapinnoissa tulla ongelmaksi yli- tai alihakeminen (engl. over- and underfetching): asiakas saa pyynnön mukana joko liian paljon tai vähän dataa. Mikäli palvelin lähettää pyyntöjen mukana ylimääräistä dataa, vastausajoista tulee varmasti pidempiä. Mikäli palvelin ei tarjoa kaikkea dataa yhden pyynnön mukana, asiakkaan on tehtävä useita pyyntöjä palvelimelle, mikä voi johtaa ruuhkautumiseen.
+
+GraphQL ratkaisee REST-rajapinnoissa hyvin yleiset yli- ja alihakemisen ongelmat. Koska asiakas voi määritellä palautettavan datan rakenteen lähes täydellisesti, GraphQL välttää useiden pyyntöjen tekemisen palvelimelle, sekä ylimääräisen datan palauttamisen.
+
+\subsection{Tutkimus: miten helposti REST ja GraphQL rajapintoihin voidaan muodostaa kyselyitä?}
+
+Gleison Brito ja Marco Tulio Valente Brasilian Minas Geraisin liittovaltion yliopistosta esittivät vuonna 2020 tutkimuksen liittyen kyselyiden muodostamiseen GraphQL- ja REST-rajapintoihin. Tutkimuksessa pyrittiin vastaamaan kahteen kysymykseen: \textit{kuinka paljon aikaa kehittäjät käyttävät REST- ja GraphQL-kyselyjen toteuttamiseen} ja \textit{mitkä ovat osallistujien käsitykset REST:stä ja GraphQL:stä}. \cite{Brito2020}
+
+Tutkimukseen osallistui 22 opiskelijaa, joista 10 oli perustutkinto-opiskelijoita ja 12 jatko-opiskelijoita. Kaikilla oli vähintään vuoden verran ohjelmointikokemusta. Tutkimukseen osallistuneista 15 opiskelijalla oli myös kokemusta GraphQL- ja/tai REST-rajapinnoista. \cite{Brito2020}
+
+Tutkimuksen aikana jokainen osallistuja toteutti kyselyitä GitHubin palveluihin sekä REST- että GraphQL-rajapintoja käyttäen. Tulos oli hieman yllättävä: jopa entuudestaan REST-rajapintaa tuntevat ja GraphQL:ää osaamattomat osallistujat pystyivät toteuttamaan kyselynsä selvästi helpommin käyttäen GraphQL:ää. Etenkin kyselyt, joissa oli monta parametriä, olivat selvästi vaikeampia toteuttaa REST-rajapintoihin. Tutkimuksen jälkeen osallistujille tehdyssä kyselyssä mainittiin kaksi selkeää etua GraphQL:n käytölle: työkalutuki kyselyjen rakentamiseen ja testaamiseen (erityisesti automaattisten täydennysominaisuuksien tarjoama tuki) ja tavanomaisia ohjelmointikieliä lähellä oleva syntaksi (rakenteet, kuten oliot, skeemat, tyypit jne.). \cite{Brito2020}
+
+Tutkimuksen perusteella GraphQL vaikuttaisi olevan käyttäjäystävällisempi rajapintoihin kyselyitä toteuttavien ohjelmoijien tarpeisiin. On kuitenkin mahdollista, että tulokset vaihtelisivat, mikäli kyselyitä suoritettaisiin erilaisiin rajapintoihin tai tutkimusta tehtäisiin suuremmalla otannalla. Olisi siis kiinnostavaa nähdä tulevaisuudessa lisää samanlaisia tutkimuksia tulosten vahvistamiseksi.
+
+\subsection{Lisää tutkimuksia REST ja GraphQL rajapintojen tehokkuudesta}
+
+Koska GraphQL on suhteellisen uusi tulokas web-rajapintojen joukossa, REST- ja GraphQL-rajapintojen tehokkuutta vertailevia tutkimuksia ei ole kovinkaan paljoa. Tämän takia tutkimusten tulokset eivät myös ole vielä täysin varmistettuja. Mikäli tutkimusta olisi enemmän, tuloksista voitaisiin olla varmempia. REST ja GraphQL-rajapintojen tehokkuutta saattaa myös olla vaikea vertailla tarkasti, sillä REST antaa itselleen vain suunta-antavat rajoitteet. Näin ollen kaksi REST-toteutusta voivat olla hyvin erilaisia.
+
+Tehokkuutta vertailevissa tutkimuksissa on joitakin yleisiä johtopäätöksiä. GraphQL vaikuttaa olevan tehokkaampi, kun suoritetaan monimutkaisia kyselyitä ja REST-pohjainen rajapinta näyttää palauttavan datan nopeammin mikäli dataa on paljon \cite{mateusz2020, Seabra2019, helgason2017}. Toisaalta Vadlamani \cite{vadlamani2021} toteaa tutkimuksessaan, että REST ja GraphQL-rajapintojen välisessä tehokkuudessa ei ole tilastollisesti kovinkaan paljoa eroa mikäli rajapintaan tehdään yksittäisiä kyselyitä. Joka tapauksessa tulosten vahvistamiseksi olisi kuitenkin hyvä tehdä lisää tutkimustyötä.
+
+\section{Suosio}
+
+REST ja GraphQL ovat molemmat suosittuja ratkaisuja rajapintojen rakentamiseen. REST- ja REST:n kaltaiset rajapinnat ovat kuitenkin selvästi yleisempiä kuin GraphQL-rajapinnat. Monessa rajapintojen parissa työskenteleville kehittäjille teetetyssä kyselyssä, REST-rajapintojen käyttöaste on noin 90\% tienoilla, kun taas GraphQL:ää sanoo käyttävänsä noin 30-40\% kehittäjistä. Koska REST-ekosysteemi on iäkkäämpi ja ainakin vielä toistaiseksi suositumpi, löytyy sille hyvin luultavasti enemmän työkaluja ja yhteisön tuottamaa tietoa ongelmien ratkaisemiseksi.
+
+GraphQL:n suosion kasvu näytti olevan tasaista vuoteen 2019 asti. Sen jälkeen GraphQL:n käytön kasvu on kuitenkin pysähtynyt, eikä suosio ole näyttänyt nousseen juurikaan vuosina 2020 ja 2021. Tästä huolimatta Vadlamanin \cite{vadlamani2021} teettämän tutkimuksen mukaan yli puolet kehittäjistä uskoo GraphQL:n saavan lisää suosiota seuraavan viiden vuoden aikana. \cite{statejs-report, smartbear-report, postman-report}
+
+Kyselyiden pohjalta on kuitenkin vaikea sanoa, ovatko käytetyt REST-rajapinnat oikeasti RESTful. On hyvinkin mahdollista, että GraphQL:n suosio on suurempaa kuin RESTful rajapintojen. Väitettä on kuitenkin vaikea todentaa, sillä hyvin moni REST-rajapinta ei ole julkisesti nähtävissä, eikä niide fieldingiläisyyttä voida näin tarkistaa. Voidaan kuitenkin todeta, että ainakin suurimmaksi osaksi REST-periaatteita noudattavat rajapinnat eivät ole häviämässä vielä minnekkään.
+
+\section{Yhteenveto}
+
+Tämän luvun tulosten perusteella sekä GraphQL- että REST-rajapinnoilla on selviä heikkouksia ja vahvuuksia. GraphQL suoriutuu selvästi paremmin, kun suoritetaan monimutkaisia kyselyitä. Kyselykielen avulla voidaan välttää datan yli- ja alihakeminen. GraphQL-kyselykielen tuoma joustavuus antaa asiakkaalle mahdollisuuden hakea dataa juuri sopivassa muodossa. Näin ollen GraphQL-rajapinnan on myös helpompi tajota dataa erilaisille asiakasohjelmille. GraphQL saattaa olla myös tehokkaampi hitaammissa verkkoyhteyksissä, sillä useita pyyntöjä palvelimelle ei tarvita, jotta haluttu vastaus voidaan muodostaa.
+
+REST vaikuttaa olevan GraphQL:ää turvallisempi ratkaisu, koska GraphQL-kyselykielen tuoma joustavuus antaa hyökkääjälle myös enemmän mahdollisuuksia hyväksikäyttää GraphQL-rajapintoja. REST on myös paljon suositumpi ja iäkkäämpi rajapintamalli. Sen ekosysteemi, työkalut ja kirjastot ovat varttuneempia ja sille löytyy enemmän osaavia kehittäjiä.

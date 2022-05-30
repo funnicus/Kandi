@@ -1,0 +1,7 @@
+query getProfile($id: String, $devicePicSize: Int) {
+  user(id: $id) {
+    id
+    name
+    profilePic(size: $devicePicSize)
+  }
+}

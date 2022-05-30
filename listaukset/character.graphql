@@ -1,0 +1,5 @@
+type Character {
+  name: String!
+  height(unit: LengthUnit = METER): Float
+  appearsIn: [Episode!]!
+}

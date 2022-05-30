@@ -1,0 +1,8 @@
+{
+  "data": {
+    "createReview": {
+      "stars": 5,
+      "commentary": "This is a great anime!"
+    }
+  }
+}

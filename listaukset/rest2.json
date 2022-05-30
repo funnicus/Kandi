@@ -1,0 +1,12 @@
+{
+    "account": {
+        "account_number": 12345,
+        "balance": {
+            "currency": "euro",
+            "value": -25.00
+        },
+        "links": {
+            "deposits": "/accounts/12345/deposits"
+        }
+    }
+}

@@ -1,0 +1,6 @@
+mutation CreateReviewForAnime($anime: String!, $review: ReviewInput!) {
+  createReview(anime: $anime, review: $review) {
+    stars
+    commentary
+  }
+}

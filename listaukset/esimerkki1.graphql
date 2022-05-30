@@ -1,0 +1,6 @@
+{
+  human(id: "007") {
+    name
+    height(unit: FOOT)
+  }
+}

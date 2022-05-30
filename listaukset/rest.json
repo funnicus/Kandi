@@ -1,0 +1,14 @@
+{
+    "account": {
+        "account_number": 12345,
+        "balance": {
+            "currency": "euro",
+            "value": 10000.00
+        },
+        "links": {
+            "deposits": "/accounts/12345/deposits",
+            "withdrawals": "/accounts/12345/withdrawals",
+            "transfers": "/accounts/12345/transfers"
+        }
+    }
+}

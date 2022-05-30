@@ -1,0 +1,40 @@
+\chapter{Johdanto} \label{Johdanto}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+Roy Fielding esitti vuonna 2000 väitöskirjassaan \textit{Architectural Styles and the Design of Network-based Software Architectures} \textbf{REST} (Representational State Transfer) rajapinta-arkkitehtuurin. REST määritteli, miten dataa (REST-maailmassa resursseja), kuten HTML, JSON ja XML, tulisi jakaa WWW:n kaltaisessa suuressa hypermediasysteemissä \cite{FieldingRThesis}. Läpi 90-luvun oli suuri tarve määritellä yhteinen standardi verkon rajapinnoille, jonka ratkaisuksi Fielding yritti tarjota REST:iä \cite{FactsAboutW3C}. Sittemmin REST on noussut hyvin suosituksi tavaksi luoda rajapintoja web-ympäristössä mm. helpon toteuttettavuudensa takia.
+
+Facebookin (nykyisin Meta) sisäisesti vuonna 2012 kehittämä GraphQL on noussut viime vuosina REST:n valta-aseman todennäköisimmäksi haastajaksi \cite{graphql-intro}. Jopa REST:n \href{https://www.stridenyc.com/podcasts/52-is-2018-the-year-graphql-kills-rest}{kuolemaa} on ennustettu aika ajoin, mutta GraphQL:n voitto kamppailussa ei näytä vielä olevan aivan täysin taattua \cite{the-year-graphql-kills-rest}. Kysymys kuuluukin: johtaako GraphQL todellakin REST-arkkitehtuurin käytön hiipumiseen vai tulevatko nämä elämään rinnakkain vaihtoehtoisina tapoina toteuttaa rajapintoja verkossa?
+
+%--------------- KAPPALE ---------------------%
+
+\section{Tutkimuksen rajaus}
+
+Tässä kandidaatintutkielmassa tarkastellaan kahta web rajapinta-arkkitehtuurimallia pääasiallisesti HTTP-protokollan yli toteutettavalle kommunikoinnille: \textbf{GraphQL} ja \textbf{REST}. Muitakin samanlaisia arkkitehtuurimalleja kuten \textbf{SOAP} tai \textbf{RPC} on olemassa, mutta näitä malleja ei käydä läpi tässä tutkielmassa. Tämä työ keskittyy puhtaasti REST:n ja GraphQL:n vertailuun, sillä ne ovat tällä hetkellä ajankohtaisimmat ja suosituimmat arkkitehtuurimallit, verkon asiakas-palvelinsovelluksia rakennettaessa.
+
+GraphQL ja REST ovat jo itsessään niin laajoja käsitteitä, että niistä voisi tehdä kokonaan omat tutkielmansa. Tässä työssä pyritään käymään läpi REST ja GraphQL vain vertailulle oleellisella tavalla. Esimerkiksi GraphQL-moottorin tarkempi toteutus on jätetty tästä tutkielmasta kokonaan pois. REST:iin ja GraphQL:ään voi syvällisemmin tutustua esimerkiksi Roy Fieldingin \href{https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm}{väitöskirjassa}\footnote{https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm} (REST) ja GraphQL:n virallisilla \href{https://graphql.org/}{sivuilla}\footnote{https://graphql.org/} sekä GraphQL:n \href{https://spec.graphql.org/}{spesifikaatioissa}\footnote{https://spec.graphql.org/} (GraphQL).
+
+%--------------- KAPPALE ---------------------%
+
+\section{Tutkimuskysymykset}\label{Alaotsikko}
+
+Työn rajauksen perusteella asetetttiin seuraavat tutkimuskysymykset:
+
+\subsubsection{Mitä hyötyjä ja haittoja on GraphQL:n käytössä verrattuna REST:iin?}
+
+Tämän tutkimuskysymyksen puitteissa pyritään vertailemaan GraphQL:ää ja REST:iä. Vertailu luo pohjan työn lopputulokselle ja seuraavaksi esiteltävän, työn kannalta oleellisimman, tutkimuskysymyksen vastaamiseen.
+
+
+\subsubsection{Tuleeko GraphQL korvaamaan REST-rajapinnat?}
+
+Tämän kandityön lopputuloksen kannalta tärkein kysymys. Tässä työssä halutaan selvittää, tuleeko GraphQL ylittämään REST:n suosion ratkaisuna verkon rajapinnoille.
+
+
+%--------------- KAPPALE ---------------------%
+
+\section{Tutkimusmenetelmät ja lähteet}
+
+Kun käsitellään verkkoympäristössä eläviä, nopeasti kehittyviä teknologioita ja arkkitehtuurimalleja, uusimman ja luotettavimman tiedon löytää usein aihetta edustavilta virallisilta verkkosivuilta. Itse REST ja GraphQL-rajapintoja vertailevaa tutkimustyötä ole tuotettu vielä kovinkaan paljoa ja näin ollen työssä käytettävien tieteellisten lähteiden määrä on vähäisempi ja niiden esittämiin väitteisiin on suhtauduttava suuremmalla varauksella kuin vastaavissa tutkielmissa yleensä.
+
+Tämä työ käyttää REST:iä esittävän informaation pääasiallisena lähteenä Roy Fielding väitöskirjaa \textit{Architectural Styles and the Design of Network-based Software Architectures} \cite{FieldingRThesis}. GraphQL:ää edustava tieto on pääasiassa peräisin graphql.org-verkkosivulta \cite{graphqlorg}. Lisäksi näiden tukena käytetään lähteenä web-standardien saralla luotettaviksi todettuja verkkolähteitä kuten MDN Webdocs ja w3.org \cite{mdn, FactsAboutW3C}. Tieteellisiä lähteitä on haettu Google Scholarista ja IEEE:n sekä ACM:n tietokannoista.

@@ -1,0 +1,24 @@
+interface NamedEntity {
+  name: String
+}
+
+interface ValuedEntity {
+  value: Int
+}
+
+# Toteuttaa NamedEntity rajapinnan. 
+# Tyypin pitää määritellä kenttä name.
+
+type Person implements NamedEntity {
+  name: String
+  age: Int
+}
+
+# Toteuttaa NamedEntity ja ValuedEntity rajapinnat. 
+# Tyypin pitää määritellä kentät name ja value.
+
+type Business implements NamedEntity & ValuedEntity {
+  name: String
+  value: Int
+  employeeCount: Int
+}
