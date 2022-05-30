@@ -5,3 +5,7 @@ Jokaisen hieman monimutkaisemman verkkosivun takana on lähes poikkeuksetta sit�
 Tämä tutkielma vertailee kahta tällä hetkellä suosittua tapaa luoda asiakas- palvelinsovellusten rajapintoja: GraphQL ja REST. Tämä tutkielma pyrkii etenkin selvittämään kirjallisuuskatsauksen avulla, voiko GraphQL ottaa REST:n paikan suosituimpana rajapintojen toteutustapana lähivuosina. REST:iä ja GraphQL:ää vertailevaa tutkimustyötä ei olla toistaiseksi tehty kovinkaan paljoa. Olemassa oleva tutkimustyö on keskittynyt rajapintojen kehitystyön helppouteen, turvallisuuten ja kehittäjien mielipiteisiin. Tulosten vahvistamiseksi olisi hyvä tehdä lisää tutkimustyötä tulevaisuudessa.
 
 GraphQL:n saavuttamasta suhteellisen nopeasta suosiosta huolimatta, se ei vaikuta pystyvän syrjäyttämään REST-ekosysteemiä vielä lähivuosina. GraphQL:n tarjoama kyselykieli antaa joustavuutta, mutta tekee rajapinnoista myös hieman monimutkaisempia. On otettava myös huomioon, että REST on muodostunut muotisanaksi, millä viitataan myös REST:n kaltaisiin rajapintoihin. Näin ollen GraphQL saattaa olla jo suositumpi kuin todelliset, alkuperäisen määritelmän mukaiset REST-toteutukset.
+
+_Tämä tutkielma on toteuttu osana Turun yliopiston tekniikan kandidaatin (tietotekniikka) tutkintoohjelmaa._
+
+_Tämä repositorio sisältää tutkielman LaTex lähdekoodin._
